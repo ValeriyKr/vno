@@ -8,6 +8,8 @@ import org.vno.mongo.domain.UserAccount;
  * @author kk
  */
 public interface UserAccountRepository extends
-        MongoRepository<UserAccount, Long> {
+        MongoRepository<UserAccount, Long>, UserAccountRepositoryCustom {
     UserAccount findByUsername(String username);
+    UserAccount findByEmail(String email);
+    UserAccount findByUsernameOrEmail(String username, String email);
 }

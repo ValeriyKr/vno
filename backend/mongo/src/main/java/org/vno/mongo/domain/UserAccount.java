@@ -27,6 +27,8 @@ public class UserAccount {
     @Field(value = "repo_ids")
     public List<Long> repoIds;
 
+    public UserAccount() {}
+
     public UserAccount(String objectId, Long id, String username, String firstname,
                        String lastname, String email, String password,
                        List<Long> roleIds, List<Long> repoIds) {
@@ -117,13 +119,13 @@ public class UserAccount {
     public String toString() {
         return "UserAccount{" +
                 "id=" + (id == null ? "null" : id) +
-                ", username='" + (username == null ? "null" : username) + '\'' +
-                ", firstname='" + (firstname == null ? "null" : firstname) + '\'' +
+                ", name='" + (username == null ? "null" : username) + '\'' +
+                ", description='" + (firstname == null ? "null" : firstname) + '\'' +
                 ", lastname='" + (lastname == null ? "null" : lastname) + '\'' +
                 ", email='" + (email == null ? "null" : email) + '\'' +
                 ", password='" + (password == null ? "null" : password) + '\'' +
-                ", roleIds=" + (roleIds == null ? "null" : roleIds.toString()) +
-                ", repoIds=" + (repoIds == null ? "null" : repoIds.toString()) +
+                ", branchIds=" + (roleIds == null ? "null" : roleIds.toString()) +
+                ", tagIds=" + (repoIds == null ? "null" : repoIds.toString()) +
                 '}';
     }
 }

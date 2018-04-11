@@ -9,4 +9,5 @@ import org.vno.mongo.domain.Role;
 public interface RoleRepository extends
         MongoRepository<Role, Long> {
     Role findById(Long id);
+    Role findByName(String name);
 }

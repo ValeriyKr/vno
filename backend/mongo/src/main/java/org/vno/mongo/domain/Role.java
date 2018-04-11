@@ -12,6 +12,8 @@ public class Role {
     Long id;
     String name;
 
+    public Role() {}
+
     public void setObjectId(String objectId) {
         this.objectId = objectId;
     }

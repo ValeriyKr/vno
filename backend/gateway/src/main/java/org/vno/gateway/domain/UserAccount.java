@@ -106,4 +106,18 @@ public class UserAccount {
     public void setRepoIds(List<Long> repoIds) {
         this.repoIds = repoIds;
     }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "id=" + (id == null ? "null" : id) +
+                ", name='" + (username == null ? "null" : username) + '\'' +
+                ", description='" + (firstname == null ? "null" : firstname) + '\'' +
+                ", lastname='" + (lastname == null ? "null" : lastname) + '\'' +
+                ", email='" + (email == null ? "null" : email) + '\'' +
+                ", password='" + (password == null ? "null" : password) + '\'' +
+                ", branchIds=" + (roleIds == null ? "null" : roleIds.toString()) +
+                ", tagIds=" + (repoIds == null ? "null" : repoIds.toString()) +
+                '}';
+    }
 }

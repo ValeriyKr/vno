@@ -1,6 +1,7 @@
 package org.vno.mongo.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,10 +33,23 @@ public class RoleController {
     @GetMapping("/get/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
         Role role = roleRepository.findById(id);
-        if (null != role) {
-            logger.info(role.toString());
-        } else {
+        if (null == role) {
             logger.info("No roles found");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } else {
+            logger.info(role.toString());
+        }
+        return ResponseEntity.ok(role);
+    }
+
+    @GetMapping("/get_by_name/{name}")
+    ResponseEntity<?> get(@PathVariable String name) {
+        Role role = roleRepository.findByName(name);
+        if (null == role) {
+            logger.info("No roles found");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } else {
+            logger.info(role.toString());
         }
         return ResponseEntity.ok(role);
     }
