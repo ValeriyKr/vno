@@ -20,6 +20,8 @@ public class Commit {
     @Property(name = "author_id")
     private Long authorId;
 
+    private String message;
+
     private Long timestamp;
 
     @Property(name = "root_id")
@@ -45,6 +47,14 @@ public class Commit {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Long getTimestamp() {
