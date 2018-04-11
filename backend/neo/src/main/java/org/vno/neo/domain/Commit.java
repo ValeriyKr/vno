@@ -26,7 +26,7 @@ public class Commit {
     private Long rootId;
 
     @JsonIgnore
-    @Relationship(type = "parent")
+    @Relationship(type = "PARENT")
     private Commit parent;
 
     Commit() {}
