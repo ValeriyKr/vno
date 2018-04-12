@@ -31,6 +31,19 @@ public class UserAccountController {
         assert null != userAccountRepository;
     }
 
+    @GetMapping("/get_by_id/{id}")
+    ResponseEntity<?> get(@PathVariable Long id) {
+        logger.info("id: " + id);
+        UserAccount user = userAccountRepository.findById(id);
+        if (null == user) {
+            logger.info("No user found");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } else {
+            logger.info("Requested user: " + user.toString());
+        }
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/get/{username}")
     ResponseEntity<?> get(@PathVariable String username) {
         UserAccount user = userAccountRepository.findByUsername(username);

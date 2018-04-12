@@ -40,7 +40,17 @@ public class MongoBridge {
         }
     }
 
-    public List<UserAccount> getAll() {
+    public UserAccount getUserById(Long id) {
+        try {
+            return new RestTemplate().getForObject(url + "/user/get_by_id/"
+                    + id, UserAccount.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<UserAccount> getAllUsers() {
         List<UserAccount> users = new ArrayList<>();
         users = new RestTemplate().getForObject(url + "/user/all/",
                 users.getClass());

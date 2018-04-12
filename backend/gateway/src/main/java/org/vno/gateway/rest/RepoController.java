@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class RepoController {
         assert null != mongoBridge;
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
@@ -44,7 +45,7 @@ public class RepoController {
         return ResponseEntity.ok(mongoBridge.getRepoById(id));
     }
 
-    @PostMapping("/add")
+    @PutMapping("/")
     ResponseEntity<?> add(@RequestBody Repo repo) {
 
         UserAccount owner = mongoBridge.getUserByUsername(
