@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.vno.neo.domain.Branch;
-import org.vno.neo.repository.BranchRepository;
+import org.vno.neo.domain.Tag;
+import org.vno.neo.repository.TagRepository;
 import org.vno.neo.repository.CommitRepository;
 
 import java.util.Set;
@@ -20,26 +20,26 @@ import java.util.logging.Logger;
 /**
  * @author kk
  */
-@RequestMapping("/ref")
+@RequestMapping("/tag")
 @RestController
-public class BranchController {
+public class TagController {
     Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final BranchRepository branchRepository;
+    private final TagRepository tagRepository;
     private final CommitRepository commitRepository;
 
     @Autowired
-    public BranchController(BranchRepository branchRepository,
-                            CommitRepository commitRepository) {
-        this.branchRepository = branchRepository;
+    public TagController(TagRepository tagRepository,
+                         CommitRepository commitRepository) {
+        this.tagRepository = tagRepository;
         this.commitRepository = commitRepository;
-        assert null != branchRepository;
+        assert null != tagRepository;
         assert null != commitRepository;
     }
 
-    @GetMapping("/get/{branch}")
-    ResponseEntity<?> get(@PathVariable Long branch) {
-        Branch b = branchRepository.findByBranch(branch);
+    @GetMapping("/get/{tag}")
+    ResponseEntity<?> get(@PathVariable Long tag) {
+        Tag b = tagRepository.findByTag(tag);
         if (null == b) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -48,19 +48,19 @@ public class BranchController {
 
     @GetMapping("/all/")
     ResponseEntity<?> all() {
-        return ResponseEntity.ok(branchRepository.findAll(0));
+        return ResponseEntity.ok(tagRepository.findAll(0));
     }
 
-    static class BranchAddDto {
-        private Branch branch;
+    static class TagAddDto {
+        private Tag tag;
         private Long revision;
 
-        public Branch getBranch() {
-            return branch;
+        public Tag getTag() {
+            return tag;
         }
 
-        public void setBranch(Branch branch) {
-            this.branch = branch;
+        public void setTag(Tag tag) {
+            this.tag = tag;
         }
 
         public Long getRevision() {
@@ -73,26 +73,26 @@ public class BranchController {
     }
 
     @PostMapping("/add")
-    ResponseEntity<?> add(@RequestBody BranchAddDto dto) {
-        Branch b = dto.getBranch();
-        b.setBranch(branchRepository.findMaxId() + 1);
+    ResponseEntity<?> add(@RequestBody TagAddDto dto) {
+        Tag b = dto.getTag();
+        b.setTag(tagRepository.findMaxId() + 1);
         b.setCommit(commitRepository.findByRevision(dto.getRevision()));
         if (null == b.getCommit()) {
             return new ResponseEntity<>("No such revision: " +
                     dto.getRevision(), HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(branchRepository.save(b));
+        return ResponseEntity.ok(tagRepository.save(b));
     }
 
-    @DeleteMapping("/del/{branch}")
-    void del(@PathVariable Long branch) {
-        branchRepository.delete(branchRepository.findByBranch(branch));
+    @DeleteMapping("/del/{tag}")
+    void del(@PathVariable Long tag) {
+        tagRepository.delete(tagRepository.findByTag(tag));
     }
 
     @PostMapping("/get/by_name_with_id_in/{name}")
-    Branch getByNameWithIdIn(@PathVariable String name,
-                             @RequestBody Set<Long> ids) {
-        Set<Branch> bb = branchRepository.findByNameAndBranchIn(name, ids);
+    Tag getByNameWithIdIn(@PathVariable String name,
+                          @RequestBody Set<Long> ids) {
+        Set<Tag> bb = tagRepository.findByNameAndTagIn(name, ids);
         if (null == bb || bb.isEmpty()) {
             return null;
         }

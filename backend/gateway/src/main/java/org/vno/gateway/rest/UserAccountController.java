@@ -16,6 +16,7 @@ import org.vno.gateway.bridge.MongoBridge;
 import org.vno.gateway.domain.UserAccount;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * @author kk
@@ -61,8 +62,8 @@ public class UserAccountController {
             return new ResponseEntity<>("Already exists",
                     HttpStatus.BAD_REQUEST);
         }
-        user.setRoleIds(Collections.singletonList(
-                mongoBridge.getRoleByName("user").getId()));
+        user.setRoleIds(new HashSet<>(Collections.singleton(
+                mongoBridge.getRoleByName("user").getId())));
         return mongoBridge.add(user);
     }
 

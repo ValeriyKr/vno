@@ -106,4 +106,9 @@ public class MongoBridge {
                     }
                 }, Repo.class);
     }
+
+    public Repo getRepoByBranch(Long id) {
+        return new RestTemplate().getForObject(url + "/repo/get_by_branch/"
+                + id, Repo.class);
+    }
 }

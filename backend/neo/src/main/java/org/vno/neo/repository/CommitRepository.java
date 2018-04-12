@@ -11,7 +11,13 @@ import java.util.List;
  * @author kk
  */
 public interface CommitRepository extends GraphRepository<Commit> {
-    @Query("MATCH (n:commit {revision:{revision}})-[p:PARENT*0..1]->(m) " +
+    @Query("MATCH (n:commit {revision:{revision}}) RETURN n")
+    Commit findByRevision(@Param("revision") Long revision);
+
+    @Query("MATCH (n:commit {revision:{revision}})-[p:PARENT*]->(m) " +
             "RETURN (n)-[]->(m)")
-    List<Commit> findByRevision(@Param("revision") Long revision);
+    List<Commit> findByRevisionWithDependency(@Param("revision") Long revision);
+
+    @Query("MATCH (n:commit) RETURN max(n.revision)")
+    Long findMaxId();
 }

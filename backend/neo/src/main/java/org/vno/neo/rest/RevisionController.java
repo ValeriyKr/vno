@@ -32,7 +32,7 @@ public class RevisionController {
     @GetMapping("/get/{revision}")
     ResponseEntity<?> get(@PathVariable Long revision) {
         Optional<Commit> commitOptional = commitRepository
-                .findByRevision(revision).stream()
+                .findByRevisionWithDependency(revision).stream()
                 .filter(c -> c.getRevision().equals(revision)).findAny();
         if (! commitOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

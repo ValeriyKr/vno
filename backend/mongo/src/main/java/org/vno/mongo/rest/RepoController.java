@@ -16,6 +16,8 @@ import org.vno.mongo.repository.UserAccountRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -38,7 +40,7 @@ public class RepoController {
         assert null != userAccountRepository;
     }
 
-    @GetMapping("/get_ue/{id}")
+    @GetMapping("/get/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
         Repo repo = repoRepository.findById(id);
         if (null == repo) {
@@ -92,7 +94,7 @@ public class RepoController {
         repo.setId(repoRepository.findWithMaxId().getId() + 1);
         repo = repoRepository.save(repo);
         if (owner.getRepoIds() == null) {
-            owner.setRepoIds(new ArrayList<>(Collections
+            owner.setRepoIds(new HashSet<>(Collections
                     .singleton(repo.getId())));
         } else {
             owner.getRepoIds().add(repo.getId());
@@ -104,6 +106,15 @@ public class RepoController {
     @GetMapping("/max")
     Repo max() {
         return repoRepository.findWithMaxId();
+    }
+
+    @GetMapping("/get_by_branch/{id}")
+    Repo getByBranch(@PathVariable Long id) {
+        List<Repo> r = repoRepository.findByBranchIdsContains(id);
+        if (null == r || r.isEmpty()) {
+            return null;
+        }
+        return r.get(0);
     }
 
 }

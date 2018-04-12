@@ -1,37 +1,18 @@
-package org.vno.neo.domain;
+package org.vno.gateway.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
-import org.springframework.data.annotation.Id;
-
-import javax.annotation.Generated;
 
 /**
  * @author kk
  */
-@NodeEntity(label = "commit")
 public class Commit {
-    @Id
     Long id;
-
-    @Property(name = "revision")
     private Long revision;
-
-    @Property(name = "author_id")
     private Long authorId;
-
     private String message;
-
     private Long timestamp;
-
-    @Property(name = "root_id")
     private Long rootId;
-
-    @JsonIgnore
-    @Relationship(type = "PARENT")
-    private Commit parent;
+    private Long parentId;
 
     Commit() {}
 
@@ -75,16 +56,12 @@ public class Commit {
         this.rootId = rootId;
     }
 
-    public Commit getParent() {
-        return parent;
-    }
-
-    public void setParent(Commit parent) {
-        this.parent = parent;
-    }
-
     public Long getParentId() {
-        return null == parent ? null : parent.getRevision();
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Override
@@ -94,7 +71,6 @@ public class Commit {
                 ", authorId=" + (authorId == null ? "null" : authorId) +
                 ", timestamp=" + (timestamp == null ? "null" : timestamp) +
                 ", rootId=" + (rootId == null ? "null" : rootId) +
-                ", parent=" + (parent == null ? "null" : parent) +
                 ", parentId=" + (getParentId() == null ? "null" :
                 getParentId()) +
                 '}';

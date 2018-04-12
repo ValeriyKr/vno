@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author kk
@@ -23,15 +23,15 @@ public class UserAccount {
     public String password;
 
     @Field(value = "role_ids")
-    public List<Long> roleIds;
+    public Set<Long> roleIds;
     @Field(value = "repo_ids")
-    public List<Long> repoIds;
+    public Set<Long> repoIds;
 
     public UserAccount() {}
 
     public UserAccount(String objectId, Long id, String username, String firstname,
                        String lastname, String email, String password,
-                       List<Long> roleIds, List<Long> repoIds) {
+                       Set<Long> roleIds, Set<Long> repoIds) {
         this.objectId = objectId;
         this.id = id;
         this.username = username;
@@ -99,19 +99,19 @@ public class UserAccount {
         this.password = password;
     }
 
-    public List<Long> getRoleIds() {
+    public Set<Long> getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(List<Long> roleIds) {
+    public void setRoleIds(Set<Long> roleIds) {
         this.roleIds = roleIds;
     }
 
-    public List<Long> getRepoIds() {
+    public Set<Long> getRepoIds() {
         return repoIds;
     }
 
-    public void setRepoIds(List<Long> repoIds) {
+    public void setRepoIds(Set<Long> repoIds) {
         this.repoIds = repoIds;
     }
 

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,8 @@ import org.vno.gateway.bridge.MongoBridge;
 import org.vno.gateway.domain.Repo;
 import org.vno.gateway.domain.UserAccount;
 
+import java.util.logging.Logger;
+
 /**
  * @author kk
  */
@@ -24,6 +25,8 @@ import org.vno.gateway.domain.UserAccount;
 @RestController
 @PreAuthorize("isAuthenticated()")
 public class RepoController {
+
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private final MongoBridge mongoBridge;
 
@@ -35,11 +38,7 @@ public class RepoController {
 
     @GetMapping("/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        UserAccount user = mongoBridge.getUserByUsername(authentication
-                .getName());
-        if (! user.repoIds.contains(id)) {
+        if (! hasAccessTo(id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         return ResponseEntity.ok(mongoBridge.getRepoById(id));
@@ -47,7 +46,6 @@ public class RepoController {
 
     @PutMapping("/")
     ResponseEntity<?> add(@RequestBody Repo repo) {
-
         UserAccount owner = mongoBridge.getUserByUsername(
                 SecurityContextHolder.getContext().getAuthentication()
                         .getName());
@@ -56,6 +54,14 @@ public class RepoController {
         }
 
         return mongoBridge.addRepo(repo, owner);
+    }
+
+    public boolean hasAccessTo(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+        UserAccount user = mongoBridge.getUserByUsername(authentication
+                .getName());
+        return user.repoIds.contains(id);
     }
 
 }

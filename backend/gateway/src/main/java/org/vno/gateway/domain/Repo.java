@@ -1,11 +1,14 @@
 package org.vno.gateway.domain;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Set;
 
 /**
  * @author kk
  */
 public class Repo {
+    @JsonIgnore
     private String objectId;
 
     private Long id;
@@ -13,13 +16,13 @@ public class Repo {
     private String name;
     private String description;
 
-    private List<Long> branchIds;
-    private List<Long> tagIds;
+    private Set<Long> branchIds;
+    private Set<Long> tagIds;
 
     public Repo() {}
 
     public Repo(String objectId, Long id, String name, String description,
-                List<Long> branchIds, List<Long> tagIds) {
+                Set<Long> branchIds, Set<Long> tagIds) {
         this.objectId = objectId;
         this.id = id;
         this.name = name;
@@ -60,19 +63,19 @@ public class Repo {
         this.description = description;
     }
 
-    public List<Long> getBranchIds() {
+    public Set<Long> getBranchIds() {
         return branchIds;
     }
 
-    public void setBranchIds(List<Long> branchIds) {
+    public void setBranchIds(Set<Long> branchIds) {
         this.branchIds = branchIds;
     }
 
-    public List<Long> getTagIds() {
+    public Set<Long> getTagIds() {
         return tagIds;
     }
 
-    public void setTagIds(List<Long> tagIds) {
+    public void setTagIds(Set<Long> tagIds) {
         this.tagIds = tagIds;
     }
 

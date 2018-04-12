@@ -1,11 +1,14 @@
 package org.vno.gateway.domain;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Set;
 
 /**
  * @author kk
  */
 public class UserAccount {
+    @JsonIgnore
     public String objectId;
 
     public Long id;
@@ -16,14 +19,14 @@ public class UserAccount {
     public String email;
     public String password;
 
-    public List<Long> roleIds;
-    public List<Long> repoIds;
+    public Set<Long> roleIds;
+    public Set<Long> repoIds;
 
     public UserAccount() {}
 
     public UserAccount(String objectId, Long id, String username, String firstname,
                        String lastname, String email, String password,
-                       List<Long> roleIds, List<Long> repoIds) {
+                       Set<Long> roleIds, Set<Long> repoIds) {
         this.objectId = objectId;
         this.id = id;
         this.username = username;
@@ -91,19 +94,19 @@ public class UserAccount {
         this.password = password;
     }
 
-    public List<Long> getRoleIds() {
+    public Set<Long> getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(List<Long> roleIds) {
+    public void setRoleIds(Set<Long> roleIds) {
         this.roleIds = roleIds;
     }
 
-    public List<Long> getRepoIds() {
+    public Set<Long> getRepoIds() {
         return repoIds;
     }
 
-    public void setRepoIds(List<Long> repoIds) {
+    public void setRepoIds(Set<Long> repoIds) {
         this.repoIds = repoIds;
     }
 
@@ -111,13 +114,13 @@ public class UserAccount {
     public String toString() {
         return "UserAccount{" +
                 "id=" + (id == null ? "null" : id) +
-                ", name='" + (username == null ? "null" : username) + '\'' +
-                ", description='" + (firstname == null ? "null" : firstname) + '\'' +
+                ", username='" + (username == null ? "null" : username) + '\'' +
+                ", firstname='" + (firstname == null ? "null" : firstname) + '\'' +
                 ", lastname='" + (lastname == null ? "null" : lastname) + '\'' +
                 ", email='" + (email == null ? "null" : email) + '\'' +
                 ", password='" + (password == null ? "null" : password) + '\'' +
-                ", branchIds=" + (roleIds == null ? "null" : roleIds.toString()) +
-                ", tagIds=" + (repoIds == null ? "null" : repoIds.toString()) +
+                ", roleIds=" + (roleIds == null ? "null" : roleIds.toString()) +
+                ", branchIds=" + (repoIds == null ? "null" : repoIds.toString()) +
                 '}';
     }
 }
