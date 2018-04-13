@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "blob")
 public class Blob {
     @Id
-    private Long objectId;
+    private String objectId;
     private Long id;
     private String name;
     private String content;
@@ -17,11 +17,11 @@ public class Blob {
 
     public Blob() {}
 
-    public Long getObjectId() {
+    public String getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(Long objectId) {
+    public void setObjectId(String objectId) {
         this.objectId = objectId;
     }
 
