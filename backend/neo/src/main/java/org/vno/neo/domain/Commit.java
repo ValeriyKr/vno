@@ -6,7 +6,8 @@ import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.data.annotation.Id;
 
-import javax.annotation.Generated;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author kk
@@ -31,7 +32,9 @@ public class Commit {
 
     @JsonIgnore
     @Relationship(type = "PARENT")
-    private Commit parent;
+    private Set<Commit> parents;
+
+    private Set<Long> blobs;
 
     Commit() {}
 
@@ -75,16 +78,25 @@ public class Commit {
         this.rootId = rootId;
     }
 
-    public Commit getParent() {
-        return parent;
+    public Set<Commit> getParents() {
+        return parents;
     }
 
-    public void setParent(Commit parent) {
-        this.parent = parent;
+    public void setParents(Set<Commit> parents) {
+        this.parents = parents;
     }
 
-    public Long getParentId() {
-        return null == parent ? null : parent.getRevision();
+    public Set<Long> getParentIds() {
+        return null == parents ? null : parents.stream().mapToLong(
+                Commit::getRevision).boxed().collect(Collectors.toSet());
+    }
+
+    public Set<Long> getBlobs() {
+        return blobs;
+    }
+
+    public void setBlobs(Set<Long> blobs) {
+        this.blobs = blobs;
     }
 
     @Override
@@ -94,9 +106,10 @@ public class Commit {
                 ", authorId=" + (authorId == null ? "null" : authorId) +
                 ", timestamp=" + (timestamp == null ? "null" : timestamp) +
                 ", rootId=" + (rootId == null ? "null" : rootId) +
-                ", parent=" + (parent == null ? "null" : parent) +
-                ", parentId=" + (getParentId() == null ? "null" :
-                getParentId()) +
+                ", parents=" + (parents == null ? "null" : parents) +
+                ", parentIds=" + (getParentIds() == null ? "null" :
+                getParentIds()) +
+                ", blobs=" + (blobs == null ? "null" : blobs) +
                 '}';
     }
 }

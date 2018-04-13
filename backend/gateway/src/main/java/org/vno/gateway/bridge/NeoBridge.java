@@ -1,9 +1,16 @@
 package org.vno.gateway.bridge;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.vno.gateway.domain.Branch;
+import org.vno.gateway.domain.Commit;
 import org.vno.gateway.domain.Tag;
 
 import java.util.Set;
@@ -43,6 +50,11 @@ public class NeoBridge {
         new RestTemplate().delete(url + "/ref/del/" + branch);
     }
 
+    public Long getBranchHead(Long branchId) {
+        return new RestTemplate().getForObject(url + "/ref/head/"
+                + branchId, Long.class);
+    }
+
     public Tag getTagById(Long id) {
         return new RestTemplate().getForObject(url + "/tag/get/" + id,
                 Tag.class);
@@ -65,6 +77,22 @@ public class NeoBridge {
 
     public void deleteTag(Long tag) {
         new RestTemplate().delete(url + "/tag/del/" + tag);
+    }
+
+    public Commit saveCommit(Commit commit) {
+        ResponseEntity<Commit> rc = new RestTemplate()
+                .exchange(url + "/r/", HttpMethod.PUT,
+                        new HttpEntity<>(commit, new HttpHeaders()),
+                        Commit.class);
+        if (rc.getStatusCode() != HttpStatus.OK) {
+            return null;
+        }
+        return rc.getBody();
+    }
+
+    public Commit getCommitFromBranch(Long branchId, Long revision) {
+        return new RestTemplate().getForObject(url + "/r/" + branchId + "/"
+                + revision, Commit.class);
     }
 
 }

@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.vno.neo.domain.Commit;
@@ -44,6 +46,17 @@ public class RevisionController {
     @GetMapping("/all/")
     ResponseEntity<?> all() {
         return ResponseEntity.ok(commitRepository.findAll(1));
+    }
+
+    @PutMapping("/")
+    Commit add(@RequestBody Commit commit) {
+        return commitRepository.save(commit);
+    }
+
+    @GetMapping("/{branch}/{revision}")
+    Commit getCommitFromBranch(@PathVariable Long branch,
+                               @PathVariable Long revision) {
+        return commitRepository.findFromBranch(branch, revision);
     }
 
 }

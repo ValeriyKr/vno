@@ -46,6 +46,11 @@ public class BranchController {
         return ResponseEntity.ok(b);
     }
 
+    @GetMapping("/head/{branch}")
+    Long head(@PathVariable Long branch) {
+        return branchRepository.findHead(branch).getRevision();
+    }
+
     @GetMapping("/all/")
     ResponseEntity<?> all() {
         return ResponseEntity.ok(branchRepository.findAll(0));

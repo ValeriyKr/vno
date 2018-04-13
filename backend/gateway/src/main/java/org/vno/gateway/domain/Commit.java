@@ -2,6 +2,8 @@ package org.vno.gateway.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Set;
+
 /**
  * @author kk
  */
@@ -12,7 +14,8 @@ public class Commit {
     private String message;
     private Long timestamp;
     private Long rootId;
-    private Long parentId;
+    private Set<Long> parentIds;
+    private Set<Long> blobIds;
 
     Commit() {}
 
@@ -56,12 +59,20 @@ public class Commit {
         this.rootId = rootId;
     }
 
-    public Long getParentId() {
-        return parentId;
+    public Set<Long> getParentIds() {
+        return parentIds;
     }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void setParentIds(Set<Long> parentIds) {
+        this.parentIds = parentIds;
+    }
+
+    public Set<Long> getBlobIds() {
+        return blobIds;
+    }
+
+    public void setBlobIds(Set<Long> blobIds) {
+        this.blobIds = blobIds;
     }
 
     @Override
@@ -71,8 +82,9 @@ public class Commit {
                 ", authorId=" + (authorId == null ? "null" : authorId) +
                 ", timestamp=" + (timestamp == null ? "null" : timestamp) +
                 ", rootId=" + (rootId == null ? "null" : rootId) +
-                ", parentId=" + (getParentId() == null ? "null" :
-                getParentId()) +
+                ", parentId=" + (getParentIds() == null ? "null" :
+                getParentIds()) +
+                ", blobIds=" + (blobIds == null ? "null" : blobIds) +
                 '}';
     }
 }

@@ -20,4 +20,10 @@ public interface CommitRepository extends GraphRepository<Commit> {
 
     @Query("MATCH (n:commit) RETURN max(n.revision)")
     Long findMaxId();
+
+    @Query("MATCH " +
+            "(b:branch " +
+            "{branch:{branch}})-[p:*]->(n:commit {revision:{revision}})" +
+            "RETURN (n)")
+    Commit findFromBranch(Long branch, Long revision);
 }

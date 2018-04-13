@@ -7,12 +7,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import org.vno.gateway.domain.Blob;
 import org.vno.gateway.domain.Repo;
 import org.vno.gateway.domain.Role;
 import org.vno.gateway.domain.UserAccount;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -110,5 +112,16 @@ public class MongoBridge {
     public Repo getRepoByBranch(Long id) {
         return new RestTemplate().getForObject(url + "/repo/get_by_branch/"
                 + id, Repo.class);
+    }
+
+    public Blob addBlob(Blob blob) {
+        return new RestTemplate().postForEntity(url + "/blob/add", blob,
+                Blob.class).getBody();
+    }
+
+    public ArrayList<Blob> getBlobsByIds(List<Blob> blobs) {
+        ArrayList<Blob> rc = new ArrayList<>();
+        rc = new RestTemplate().postForEntity(url + "/blob/batch/", blobs, rc.getClass()).getBody();
+        return rc;
     }
 }
