@@ -27,14 +27,13 @@ public class Commit {
 
     private Long timestamp;
 
-    @Property(name = "root_id")
-    private Long rootId;
-
     @JsonIgnore
     @Relationship(type = "PARENT")
     private Set<Commit> parents;
 
-    private Set<Long> blobs;
+    private Set<Long> parentIds;
+
+    private Set<Long> blobIds;
 
     public Commit() {}
 
@@ -70,14 +69,6 @@ public class Commit {
         this.timestamp = timestamp;
     }
 
-    public Long getRootId() {
-        return rootId;
-    }
-
-    public void setRootId(Long rootId) {
-        this.rootId = rootId;
-    }
-
     public Set<Commit> getParents() {
         return parents;
     }
@@ -91,12 +82,20 @@ public class Commit {
                 Commit::getRevision).boxed().collect(Collectors.toSet());
     }
 
-    public Set<Long> getBlobs() {
-        return blobs;
+    public void setParentIds(Set<Long> parentIds) {
+        this.parentIds = parentIds;
     }
 
-    public void setBlobs(Set<Long> blobs) {
-        this.blobs = blobs;
+    public Set<Long> getDtoParentIds() {
+        return parentIds;
+    }
+
+    public Set<Long> getBlobIds() {
+        return blobIds;
+    }
+
+    public void setBlobIds(Set<Long> blobIds) {
+        this.blobIds = blobIds;
     }
 
     @Override
@@ -105,11 +104,11 @@ public class Commit {
                 "revision=" + (revision == null ? "null" : revision) +
                 ", authorId=" + (authorId == null ? "null" : authorId) +
                 ", timestamp=" + (timestamp == null ? "null" : timestamp) +
-                ", rootId=" + (rootId == null ? "null" : rootId) +
                 ", parents=" + (parents == null ? "null" : parents) +
                 ", parentIds=" + (getParentIds() == null ? "null" :
                 getParentIds()) +
-                ", blobs=" + (blobs == null ? "null" : blobs) +
+                ", blobIds=" + (blobIds == null ? "null" : blobIds) +
                 '}';
     }
+
 }

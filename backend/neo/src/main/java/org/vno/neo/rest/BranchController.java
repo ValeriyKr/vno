@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.vno.neo.domain.Branch;
+import org.vno.neo.domain.Commit;
 import org.vno.neo.repository.BranchRepository;
 import org.vno.neo.repository.CommitRepository;
 
@@ -48,7 +49,13 @@ public class BranchController {
 
     @GetMapping("/head/{branch}")
     Long head(@PathVariable Long branch) {
-        return branchRepository.findHead(branch).getRevision();
+        Commit h = branchRepository.findHead(branch);
+        if (null == h) {
+            logger.info("head not found");
+            return null;
+        }
+        logger.info("head: " + h);
+        return h.getRevision();
     }
 
     @GetMapping("/all/")

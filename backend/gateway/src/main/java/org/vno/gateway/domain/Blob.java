@@ -1,5 +1,7 @@
 package org.vno.gateway.domain;
 
+import java.util.Objects;
+
 /**
  * @author kk
  */
@@ -41,5 +43,21 @@ public class Blob {
 
     public void setMode(Integer mode) {
         this.mode = mode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Blob blob = (Blob) o;
+        return Objects.equals(name, blob.name) &&
+                Objects.equals(content, blob.content) &&
+                Objects.equals(mode, blob.mode);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, content, mode);
     }
 }

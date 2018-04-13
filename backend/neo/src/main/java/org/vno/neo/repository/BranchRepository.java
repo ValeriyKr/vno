@@ -14,7 +14,7 @@ import java.util.Set;
 public interface BranchRepository extends GraphRepository<Branch> {
     Branch findByBranch(Long branch);
 
-    @Query("MATCH (n:branch {id:{id}})-[p:POINTS]->(m) " +
+    @Query("MATCH (n:branch {branch:{id}})-[p:POINTS]->(m) " +
             "RETURN (m)")
     Commit findHead(@Param("id") Long id);
 
@@ -23,7 +23,7 @@ public interface BranchRepository extends GraphRepository<Branch> {
 
     Set<Branch> findByNameAndBranchIn(String name, Set<Long> ids);
 
-    @Query("MATCH (b:branch {id:{id}})-[p:POINTS]->(m)," +
+    @Query("MATCH (b:branch {branch:{id}})-[p:POINTS]->(m)," +
             "(n:commit {revision:{head}}) DELETE p CREATE (b)-[t:POINTS]->(n)")
     void updateBranchHead(@Param("id") Long id, @Param("head") Long head);
 

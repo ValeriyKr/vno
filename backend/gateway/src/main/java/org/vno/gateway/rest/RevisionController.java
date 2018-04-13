@@ -17,7 +17,9 @@ import org.vno.gateway.domain.Blob;
 import org.vno.gateway.domain.Commit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author kk
@@ -26,6 +28,7 @@ import java.util.List;
 @RestController
 @PreAuthorize("isAuthenticated()")
 public class RevisionController {
+    Logger logger = Logger.getLogger(this.getClass().getName());
 
     private final NeoBridge neoBridge;
     private final MongoBridge mongoBridge;
@@ -46,7 +49,7 @@ public class RevisionController {
     /**
      * Data transferring object for commit
      */
-    private class CommitDto {
+    public static class CommitDto {
         private Commit commit;
         private ArrayList<Blob> blobs;
 
@@ -105,7 +108,7 @@ public class RevisionController {
      *   "commit":{
      *     "message":"Add javadoc",
      *     "timestamp":12345,
-     *     "parent_ids":[1, 4, 3]
+     *     "parentIds":[1, 4, 3]
      *   },
      *   "blobs":[
      *     {
@@ -142,7 +145,17 @@ public class RevisionController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         Commit commit = commitDto.getCommit();
-        if (! commit.getParentIds().contains(neoBridge.getBranchHead(branchId))) {
+        Long bHead = neoBridge.getBranchHead(branchId);
+        if (bHead == null) {
+            return new ResponseEntity<>("Branch head not found",
+                    HttpStatus.NOT_FOUND);
+        }
+        logger.info("Commit: " + commit);
+        if (null == commit.getParentIds()) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        if (! commit.getParentIds().contains(bHead)) {
+            logger.info("Conflict");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         for (Long r : commit.getParentIds()) {
@@ -152,7 +165,7 @@ public class RevisionController {
         commit.setAuthorId(mongoBridge.getUserByUsername(SecurityContextHolder
                 .getContext().getAuthentication().getName()).getId());
         ArrayList<Blob> blobs = commitDto.blobs;
-        commit.setBlobIds(null);
+        commit.setBlobIds(new HashSet<>());
         for (Blob blob : blobs) {
             commit.getBlobIds().add(mongoBridge.addBlob(blob).getId());
         }

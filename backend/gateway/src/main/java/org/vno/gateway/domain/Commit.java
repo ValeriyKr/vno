@@ -11,7 +11,6 @@ public class Commit {
     private Long authorId;
     private String message;
     private Long timestamp;
-    private Long rootId;
     private Set<Long> parentIds;
     private Set<Long> blobIds;
 
@@ -49,14 +48,6 @@ public class Commit {
         this.timestamp = timestamp;
     }
 
-    public Long getRootId() {
-        return rootId;
-    }
-
-    public void setRootId(Long rootId) {
-        this.rootId = rootId;
-    }
-
     public Set<Long> getParentIds() {
         return parentIds;
     }
@@ -79,8 +70,7 @@ public class Commit {
                 "revision=" + (revision == null ? "null" : revision) +
                 ", authorId=" + (authorId == null ? "null" : authorId) +
                 ", timestamp=" + (timestamp == null ? "null" : timestamp) +
-                ", rootId=" + (rootId == null ? "null" : rootId) +
-                ", parentId=" + (getParentIds() == null ? "null" :
+                ", parentIds=" + (getParentIds() == null ? "null" :
                 getParentIds()) +
                 ", blobIds=" + (blobIds == null ? "null" : blobIds) +
                 '}';

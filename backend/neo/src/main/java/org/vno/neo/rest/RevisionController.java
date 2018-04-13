@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vno.neo.domain.Commit;
 import org.vno.neo.repository.CommitRepository;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -50,7 +52,16 @@ public class RevisionController {
 
     @PutMapping("/")
     Commit add(@RequestBody Commit commit) {
-        return commitRepository.save(commit);
+        Set<Long> parents =  commit.getDtoParentIds();
+        commit.setParents(new HashSet<>());
+        for (Long p : parents) {
+            commit.getParents().add(commitRepository.findByRevision(p));
+        }
+        Long maxRevision = commitRepository.findMaxId();
+        commit.setRevision(maxRevision == null ? 0 : maxRevision + 1);
+        commit = commitRepository.save(commit);
+        logger.info("Commit saved: " + commit);
+        return commit;
     }
 
     @GetMapping("/{branch}/{revision}")
