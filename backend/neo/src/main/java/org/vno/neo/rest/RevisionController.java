@@ -13,6 +13,7 @@ import org.vno.neo.domain.Commit;
 import org.vno.neo.repository.CommitRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -67,7 +68,19 @@ public class RevisionController {
     @GetMapping("/{branch}/{revision}")
     Commit getCommitFromBranch(@PathVariable Long branch,
                                @PathVariable Long revision) {
-        return commitRepository.findFromBranch(branch, revision);
+        List<Commit> commits = commitRepository.findFromBranch(branch, revision);
+        logger.info("Commits: " + (commits == null ? "null" : commits));
+        if (commits == null) return null;
+        Commit commit = commits.stream()
+                .filter(c -> c.getRevision().equals(revision)).findAny()
+                .orElse(null);
+        if (commit == null) return null;
+        commit.setParents(new HashSet<>());
+        for (Commit c : commits) {
+            if (c.getRevision().equals(commit.getRevision())) continue;
+            commit.getParents().add(c);
+        }
+        return commit;
     }
 
 }
