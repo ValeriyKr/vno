@@ -50,7 +50,7 @@ public class RevisionController {
         private Commit commit;
         private ArrayList<Blob> blobs;
 
-        CommitDto() {}
+        public CommitDto() {}
 
         public Commit getCommit() {
             return commit;
@@ -153,11 +153,12 @@ public class RevisionController {
                 .getContext().getAuthentication().getName()).getId());
         ArrayList<Blob> blobs = commitDto.blobs;
         commit.setBlobIds(null);
-        for (int i = 0; i < blobs.size(); ++i) {
-            commit.getBlobIds().add(mongoBridge.addBlob(blobs.get(i)).getId());
+        for (Blob blob : blobs) {
+            commit.getBlobIds().add(mongoBridge.addBlob(blob).getId());
         }
-        // TODO: move branch upper
-        return ResponseEntity.ok(neoBridge.saveCommit(commit));
+        commit = neoBridge.saveCommit(commit);
+        neoBridge.moveBranch(branchId, commit.getRevision());
+        return ResponseEntity.ok(commit);
     }
 
 }

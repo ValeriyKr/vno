@@ -49,6 +49,11 @@ public class NeoBridge {
         new RestTemplate().delete(url + "/ref/del/" + branch);
     }
 
+    public void moveBranch(Long branchId, Long revision) {
+        new RestTemplate().postForLocation(url + "/ref/move/" + branchId + "/"
+                + revision, null);
+    }
+
     public Long getBranchHead(Long branchId) {
         return new RestTemplate().getForObject(url + "/ref/head/"
                 + branchId, Long.class);

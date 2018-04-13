@@ -104,4 +104,9 @@ public class BranchController {
         return bb.stream().findAny().orElse(null);
     }
 
+    @PostMapping("/move/{branchId}/{revision}")
+    void move(@PathVariable Long branchId, @PathVariable Long revision) {
+        branchRepository.updateBranchHead(branchId, revision);
+    }
+
 }
