@@ -14,6 +14,7 @@ import org.vno.gateway.domain.UserAccount;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -117,9 +118,10 @@ public class MongoBridge {
                 Blob.class).getBody();
     }
 
-    public ArrayList<Blob> getBlobsByIds(List<Blob> blobs) {
+    public ArrayList<Blob> getBlobsByIds(Set<Long> blobs) {
         ArrayList<Blob> rc = new ArrayList<>();
-        rc = new RestTemplate().postForEntity(url + "/blob/batch/", blobs, rc.getClass()).getBody();
+        rc = new RestTemplate().postForEntity(url + "/blob/batch/",
+                blobs, rc.getClass()).getBody();
         return rc;
     }
 }

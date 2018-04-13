@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author kk
@@ -73,6 +74,33 @@ public class RevisionController {
     }
 
     /**
+     * Retrieves commit and blobs from branch in repository
+     *
+     * @param repoId repository id (must be accessible for user)
+     * @param branchId branch id in repository
+     * @param revision revision number
+     * @return commit with blobs (CommitDto), 403 or 404
+     */
+    @GetMapping("/full/{repoId}/{branchId}/{revision}/")
+    ResponseEntity<?> getFull(@PathVariable Long repoId,
+                              @PathVariable Long branchId,
+                              @PathVariable Long revision) {
+        if (! mongoBridge.getRepoById(repoId).getBranchIds()
+                .contains(branchId)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        if (! branchController.hasAccessTo(branchId)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        CommitDto rc = new CommitDto();
+        rc.setCommit(neoBridge.getCommitFromBranch(branchId, revision));
+        rc.setBlobs(new ArrayList<>());
+        rc.getBlobs().addAll(mongoBridge.getBlobsByIds(
+                rc.getCommit().getBlobIds()));
+        return ResponseEntity.ok(rc);
+    }
+
+    /**
      * Retrieves commit from branch in repository
      *
      * @param repoId repository id (must be accessible for user)
@@ -91,11 +119,8 @@ public class RevisionController {
         if (! branchController.hasAccessTo(branchId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        CommitDto rc = new CommitDto();
-        rc.setCommit(neoBridge.getCommitFromBranch(branchId, revision));
-        rc.setBlobs(new ArrayList<>());
-        rc.getBlobs().addAll(mongoBridge.getBlobsByIds(rc.getBlobs()));
-        return ResponseEntity.ok(rc);
+        return ResponseEntity.ok(
+                neoBridge.getCommitFromBranch(branchId, revision));
     }
 
     /**
