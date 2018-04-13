@@ -36,7 +36,7 @@ public class Commit {
 
     private Set<Long> blobs;
 
-    Commit() {}
+    public Commit() {}
 
     public Long getRevision() {
         return revision;

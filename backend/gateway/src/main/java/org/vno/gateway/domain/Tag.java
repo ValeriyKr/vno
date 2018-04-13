@@ -12,7 +12,7 @@ public class Tag {
     private String name;
     private Long head;
 
-    Tag() {}
+    public Tag() {}
 
     public Long getId() {
         return id;

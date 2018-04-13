@@ -39,6 +39,15 @@ public class TagController {
         assert null != repoController;
     }
 
+    /**
+     * Returns tag by its and repo's ids
+     * TODO: why doesn't this method have a check for relation between tag and
+     * TODO: repo?
+     *
+     * @param repoId repository id, where tag must be presented
+     * @param tagId id of required tag
+     * @return tag or 403 (TODO: 404)
+     */
     @GetMapping("/{repoId}/{tagId}")
     ResponseEntity<?> get(@PathVariable Long repoId,
                           @PathVariable Long tagId) {
@@ -48,9 +57,20 @@ public class TagController {
         return ResponseEntity.ok(neoBridge.getTagById(tagId));
     }
 
-    @PutMapping("/{repoId}/{headId}/")
+    /**
+     * Creates new tag
+     *
+     * @param repoId repository to store tag
+     * @param headId commit to point by tag
+     * @param name tag name
+     * @return 200 on success, 403 if don't have permissions, 400 if already
+     * exists
+     */
+    @PutMapping("/{repoId}/{headId}/{name}")
     ResponseEntity<?> add(@PathVariable Long repoId, @PathVariable Long headId,
-                          @RequestBody Tag tag) {
+                          @PathVariable String name) {
+        Tag tag = new Tag();
+        tag.setName(name);
         if (! repoController.hasAccessTo(repoId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
@@ -60,11 +80,18 @@ public class TagController {
                     HttpStatus.BAD_REQUEST);
         }
         tag.setId(null);
-        tag.setHead(null);
+        tag.setHead(null); // TODO: bug
         neoBridge.saveTag(tag);
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     * Deletes a tag
+     *
+     * @param repoId id of repository, which is storing tag
+     * @param tagId id of tag
+     * @return 403 if not permitted, 200 if deleted
+     */
     @DeleteMapping("/{repoId}/{tagId}")
     ResponseEntity<?> del(@PathVariable Long repoId,
                           @PathVariable Long tagId) {

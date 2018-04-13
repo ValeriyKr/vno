@@ -39,6 +39,15 @@ public class BranchController {
         assert null != repoController;
     }
 
+    /**
+     * Returns branch by its and repo's ids
+     * TODO: why doesn't this method have a check for relation between branch
+     * TODO: and repo?
+     *
+     * @param repoId repository id, where branch must be presented
+     * @param branchId id of required branch
+     * @return branch or 403 (TODO: 404)
+     */
     @GetMapping("/{repoId}/{branchId}")
     ResponseEntity<?> get(@PathVariable Long repoId,
                           @PathVariable Long branchId) {
@@ -48,9 +57,20 @@ public class BranchController {
         return ResponseEntity.ok(neoBridge.getBranchById(branchId));
     }
 
-    @PutMapping("/{repoId}/{headId}/")
+    /**
+     * Creates new branch
+     *
+     * @param repoId repository to store branch
+     * @param headId commit to point by branch
+     * @param name branch name
+     * @return 200 on success, 403 if don't have permissions, 400 if already
+     * exists
+     */
+    @PutMapping("/{repoId}/{headId}/{name}")
     ResponseEntity<?> add(@PathVariable Long repoId, @PathVariable Long headId,
-                          @RequestBody Branch branch) {
+                          @PathVariable String name) {
+        Branch branch = new Branch();
+        branch.setName(name);
         if (!repoController.hasAccessTo(repoId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
@@ -60,11 +80,18 @@ public class BranchController {
                     HttpStatus.BAD_REQUEST);
         }
         branch.setId(null);
-        branch.setHead(null);
+        branch.setHead(null); // TODO: bug
         neoBridge.saveBranch(branch);
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     * Deletes a branch
+     *
+     * @param repoId id of repository, which is storing branch
+     * @param branchId id of branch
+     * @return 403 if not permitted, 200 if deleted
+     */
     @DeleteMapping("/{repoId}/{branchId}")
     ResponseEntity<?> del(@PathVariable Long repoId,
                           @PathVariable Long branchId) {
@@ -75,6 +102,12 @@ public class BranchController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     * Checks branch access for current user
+     *
+     * @param branchId branch id
+     * @return true if user has access to branch with given id
+     */
     public boolean hasAccessTo(Long branchId) {
         return repoController
                 .hasAccessTo(mongoBridge.getRepoByBranch(branchId).getId());

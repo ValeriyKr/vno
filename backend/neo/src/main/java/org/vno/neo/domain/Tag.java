@@ -22,7 +22,7 @@ public class Tag {
     @Relationship(type = "POINTS")
     private Commit commit;
 
-    Tag() {}
+    public Tag() {}
 
     public Long getId() {
         return id;

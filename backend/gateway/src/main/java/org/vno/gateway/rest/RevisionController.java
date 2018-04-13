@@ -43,6 +43,9 @@ public class RevisionController {
         assert null != branchController;
     }
 
+    /**
+     * Data transferring object for commit
+     */
     private class CommitDto {
         private Commit commit;
         private ArrayList<Blob> blobs;
@@ -66,6 +69,14 @@ public class RevisionController {
         }
     }
 
+    /**
+     * Retrieves commit from branch in repository
+     *
+     * @param repoId repository id (must be accessible for user)
+     * @param branchId branch id in repository
+     * @param revision revision number
+     * @return commit with blobs (CommitDto), 403 or 404
+     */
     @GetMapping("/{repoId}/{branchId}/{revision}/")
     ResponseEntity<?> get(@PathVariable Long repoId,
                           @PathVariable Long branchId,
@@ -84,6 +95,38 @@ public class RevisionController {
         return ResponseEntity.ok(rc);
     }
 
+    /**
+     * Saves commit into repository
+     *
+     * Example:
+     * PUT request to example.com/r/1/1/
+     * Request body:
+     * {
+     *   "commit":{
+     *     "message":"Add javadoc",
+     *     "timestamp":12345,
+     *     "parent_ids":[1, 4, 3]
+     *   },
+     *   "blobs":[
+     *     {
+     *       "name":"CMakeLists.txt",
+     *       "mode":13,
+     *       "content":"base64encodedcontent"
+     *     },
+     *     {
+     *       "name":"src/main.cxx",
+     *       "mode":15,
+     *       "content":"base64encodedcontent"
+     *     }
+     *   ]
+     * }
+     *
+     *
+     * @param repoId (see get())
+     * @param branchId (see get())
+     * @param commitDto (see get())
+     * @return (see get())
+     */
     @PutMapping("/{repoId}/{branchId}/")
     ResponseEntity<?> add(@PathVariable Long repoId,
                           @PathVariable Long branchId,
@@ -113,6 +156,7 @@ public class RevisionController {
         for (int i = 0; i < blobs.size(); ++i) {
             commit.getBlobIds().add(mongoBridge.addBlob(blobs.get(i)).getId());
         }
+        // TODO: move branch upper
         return ResponseEntity.ok(neoBridge.saveCommit(commit));
     }
 

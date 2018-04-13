@@ -34,6 +34,10 @@ public class UserAccountController {
         assert null != mongoBridge;
     }
 
+    /**
+     * @param id required user id
+     * @return user info or 404 not found
+     */
     @GetMapping("/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
         UserAccount user = mongoBridge.getUserById(id);
@@ -45,6 +49,9 @@ public class UserAccountController {
         }
     }
 
+    /**
+     * @return signed-in user info
+     */
     @GetMapping("/me/")
     ResponseEntity<?> get() {
         Authentication authentication = SecurityContextHolder.getContext()
@@ -55,6 +62,13 @@ public class UserAccountController {
         return ResponseEntity.ok(user);
     }
 
+    /**
+     * Registers new user
+     * TODO: permit all or secure to admin level
+     *
+     * @param user user info, including password
+     * @return 400 if username or email are presented, 200 otherwise
+     */
     @PostMapping("/register/")
     ResponseEntity<?> register(@RequestBody UserAccount user) {
         if (! HttpStatus.NOT_FOUND.equals(mongoBridge.testUsernameOrEmail(

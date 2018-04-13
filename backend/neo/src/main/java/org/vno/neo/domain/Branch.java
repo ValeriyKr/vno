@@ -22,7 +22,7 @@ public class Branch {
     @Relationship(type = "POINTS")
     private Commit commit;
 
-    Branch() {}
+    public Branch() {}
 
     public Long getId() {
         return id;

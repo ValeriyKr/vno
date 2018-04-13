@@ -15,7 +15,7 @@ public class Commit {
     private Set<Long> parentIds;
     private Set<Long> blobIds;
 
-    Commit() {}
+    public Commit() {}
 
     public Long getRevision() {
         return revision;

@@ -12,7 +12,7 @@ public class Branch {
     private String name;
     private Long head;
 
-    Branch() {}
+    public Branch() {}
 
     public Long getId() {
         return id;

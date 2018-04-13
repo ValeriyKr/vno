@@ -16,6 +16,7 @@ import org.vno.gateway.bridge.MongoBridge;
 import org.vno.gateway.domain.Repo;
 import org.vno.gateway.domain.UserAccount;
 
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 /**
@@ -36,6 +37,12 @@ public class RepoController {
         assert null != mongoBridge;
     }
 
+    /**
+     * Retrieves repository
+     *
+     * @param id repository id (must be accessible)
+     * @return repository description object
+     */
     @GetMapping("/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
         if (! hasAccessTo(id)) {
@@ -44,6 +51,12 @@ public class RepoController {
         return ResponseEntity.ok(mongoBridge.getRepoById(id));
     }
 
+    /**
+     * Creates new repository
+     *
+     * @param repo repository description object
+     * @return 200 ok, or bad request (already exists)
+     */
     @PutMapping("/")
     ResponseEntity<?> add(@RequestBody Repo repo) {
         UserAccount owner = mongoBridge.getUserByUsername(
@@ -56,6 +69,12 @@ public class RepoController {
         return mongoBridge.addRepo(repo, owner);
     }
 
+    /**
+     * Checks repository access for current user
+     *
+     * @param id repository id
+     * @return true if user has access to repo with given id
+     */
     public boolean hasAccessTo(Long id) {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
