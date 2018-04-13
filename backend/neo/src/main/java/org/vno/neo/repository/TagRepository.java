@@ -3,8 +3,8 @@ package org.vno.neo.repository;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
-import org.vno.neo.domain.Tag;
 import org.vno.neo.domain.Commit;
+import org.vno.neo.domain.Tag;
 
 import java.util.Set;
 

@@ -1,6 +1,5 @@
 package org.vno.mongo.repository;
 
-import org.vno.mongo.domain.Repo;
 import org.vno.mongo.domain.UserAccount;
 
 /**

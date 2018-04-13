@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
 import org.vno.gateway.domain.Blob;
 import org.vno.gateway.domain.Repo;
 import org.vno.gateway.domain.Role;
@@ -14,7 +13,6 @@ import org.vno.gateway.domain.UserAccount;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
