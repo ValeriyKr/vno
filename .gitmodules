@@ -1,0 +1,3 @@
+[submodule "cli"]
+	path = cli
+	url = https://github.com/Programmer74/vno-cli
