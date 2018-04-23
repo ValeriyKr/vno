@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 @Component
 public class MongoBridge {
-    Logger logger = Logger.getLogger(this.getClass().getName());
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Value("${mongo.server.url}")
     private String url;
@@ -51,6 +51,7 @@ public class MongoBridge {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<UserAccount> getAllUsers() {
         List<UserAccount> users = new ArrayList<>();
         users = new RestTemplate().getForObject(url + "/user/all/",
@@ -118,6 +119,7 @@ public class MongoBridge {
                 Blob.class).getBody();
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayList<Blob> getBlobsByIds(Set<Long> blobs) {
         ArrayList<Blob> rc = new ArrayList<>();
         rc = new RestTemplate().postForEntity(url + "/blob/batch/",

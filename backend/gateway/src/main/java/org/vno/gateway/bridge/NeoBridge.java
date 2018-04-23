@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 @Component
 public class NeoBridge {
-    Logger logger = Logger.getLogger(this.getClass().getName());
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Value("${neo4j.server.url}")
     private String url;
