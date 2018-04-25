@@ -11,6 +11,7 @@
     <modules>
         <module>mongo</module>
         <module>neo</module>
+        <module>cassandra</module>
         <module>gateway</module>
     </modules>
 
