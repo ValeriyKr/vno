@@ -59,22 +59,13 @@
       function show_branch(rp, br) {
         document.getElementById("commits").innerHTML = "";
         id = branches[br].head;
-        while (true) {
-          r = call("GET", "/r/" + rp + "/" + br + "/" +
-            id + "/", null);
-          if (typeof r.status != 'undefined') {
-            return;
-          }
+        commits = call("GET", "/r/slice/" + rp + "/" + br + "/", null);
+        for (i = 0; i < commits.length; ++i) {
+          r = commits[i];
           document.getElementById("commits").innerHTML +=
             "<tr><td>" + r.revision + "</td><td>" + call("GET",
               "/user/" + r.authorId, null).username + "</td><td>" + r.message +
             "</td><td>" + r.timestamp + "</td></tr>";
-          if (typeof r.parentIds == 'undefined'
-            || r.parentIds == null
-            || r.parentIds.length == 0) {
-            return;
-          }
-          id = r.parentIds[0];
         }
       }
 
@@ -82,10 +73,10 @@
   </head>
 
   <body onload="ask_credentials(); load_repos();">
-    Want faster and without ads? <a href="ct.html">Get it!</a>
     <table id="repos"></table>
     <table id="branches"></table>
     <table id="commits"></table>
   </body>
 
 </html>
+
