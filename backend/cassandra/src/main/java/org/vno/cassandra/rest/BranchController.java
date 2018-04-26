@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vno.cassandra.db.BranchRepository;
 import org.vno.cassandra.db.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
