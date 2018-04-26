@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Welcome to VNO!</title>
+    <script type="text/javascript">
+      var path = "/vno/api";
+
+      var auth_hdr
+      var me;
+      var repos = [];
+      var branches = [];
+      
+      function call(method, uri, body) {
+        var rq = new XMLHttpRequest();
+        rq.open("GET", path + uri, false); // TODO: body
+        rq.setRequestHeader("Authorization", auth_hdr);
+        rq.setRequestHeader("Content-Type", "application/json");
+        var rc;
+        rq.onload = function(e) {
+          rc = JSON.parse(rq.responseText);
+        };
+        rq.send();
+        return rc;
+      }
+
+      function ask_credentials() {
+        var name = prompt("username");
+        var pass = prompt("password");
+        auth_hdr = "Basic " + btoa(name+":"+pass);
+        me = call("GET", "/user/me/", null);
+      }
+      
+      function load_repos() {
+        for (i = 0; i < me.repoIds.length; ++i) {
+          repo = call("GET", "/repo/" + me.repoIds[i], null);
+          document.getElementById("repos").innerHTML +=
+            "<tr onclick=\"show_repo(" + repo.id + ");\"><td>"
+            + repo.id + "</td><td>" + repo.name + "</td><td>" +
+            repo.description + "</td></tr>";
+          repos[repo.id] = repo;
+        }
+      }
+
+      function show_repo(id) {
+        document.getElementById("branches").innerHTML = "";
+        document.getElementById("commits").innerHTML = "";
+        for (i = 0; i < repos[id].branchIds.length; ++i) {
+          branch = call("GET", "/ref/" + id + "/" + repos[id].branchIds[i],
+            null);
+          document.getElementById("branches").innerHTML +=
+            "<tr onclick=\"show_branch(" + id + "," + branch.branch +
+            ");\"><td>" + branch.branch + "</td><td>" + branch.name +
+            "</td><td>" + branch.head + "</td></tr>";
+          branches[branch.branch] = branch;
+        }
+      }
+
+      function show_branch(rp, br) {
+        document.getElementById("commits").innerHTML = "";
+        id = branches[br].head;
+        while (true) {
+          r = call("GET", "/r/" + rp + "/" + br + "/" +
+            id + "/", null);
+          if (typeof r.status != 'undefined') {
+            return;
+          }
+          document.getElementById("commits").innerHTML +=
+            "<tr><td>" + r.revision + "</td><td>" + call("GET",
+              "/user/" + r.authorId, null).username + "</td><td>" + r.message +
+            "</td><td>" + r.timestamp + "</td></tr>";
+          if (typeof r.parentIds == 'undefined'
+            || r.parentIds == null
+            || r.parentIds.length == 0) {
+            return;
+          }
+          id = r.parentIds[0];
+        }
+      }
+
+    </script>
+  </head>
+
+  <body onload="ask_credentials(); load_repos();">
+    <table id="repos"></table>
+    <table id="branches"></table>
+    <table id="commits"></table>
+  </body>
+
+</html>
