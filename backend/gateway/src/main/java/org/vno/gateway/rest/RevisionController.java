@@ -18,6 +18,7 @@ import org.vno.gateway.domain.Blob;
 import org.vno.gateway.domain.Commit;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -144,8 +145,11 @@ public class RevisionController {
         if (! branchController.hasAccessTo(branchId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<>(neoBridge.getCommitsByIds(
-                cassandraBridge.branchSlice(repoId, branchId)), HttpStatus.OK);
+        List<Commit> commits = neoBridge.getCommitsByIds(
+                cassandraBridge.branchSlice(repoId, branchId));
+        commits.sort((o1, o2) -> o1.getRevision() < o2.getRevision() ? -1
+                : (o1.getRevision() > o2.getRevision() ? +1 : 0));
+        return new ResponseEntity<>(commits, HttpStatus.OK);
     }
 
     /**
