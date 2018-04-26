@@ -3,6 +3,7 @@ package org.vno.cassandra.db;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -50,6 +51,7 @@ public class CassandraConnectionBean {
         cluster.close();
     }
 
+    @Bean
     public Session getSession() {
         return session;
     }

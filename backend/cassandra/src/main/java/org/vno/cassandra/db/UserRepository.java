@@ -11,28 +11,28 @@ import java.util.logging.Logger;
  * @author kk
  */
 @Component
-public class BranchRepository {
+public class UserRepository {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private final Session session;
 
     @Autowired
-    public BranchRepository(Session session) {
+    public UserRepository(Session session) {
         this.session = session;
         assert null != session;
     }
 
-    public void add(Long repoId, Long branchId, Long... userIds) {
+    public void add(Long userId, Long repoId, Long... branchIds) {
         StringBuilder sb = new StringBuilder()
-                .append("CREATE TABLE IF NOT EXISTS branch_")
-                .append(repoId)
+                .append("CREATE TABLE IF NOT EXISTS user_")
+                .append(userId)
                 .append("_")
-                .append(branchId)
+                .append(repoId)
                 .append(" (commit int PRIMARY KEY");
-        if (null != userIds) {
-            for (Long userId : userIds) {
+        if (null != branchIds) {
+            for (Long branchId : branchIds) {
                 sb.append(", commits_")
-                        .append(userId)
+                        .append(branchId)
                         .append(" int");
             }
         }
@@ -42,12 +42,12 @@ public class BranchRepository {
 
     public void commit(Long userId, Long repoId, Long branchId, Long revision) {
         StringBuilder sb = new StringBuilder()
-                .append("INSERT INTO branch_")
-                .append(repoId)
-                .append("_")
-                .append(branchId)
-                .append(" (commit, commits_")
+                .append("INSERT INTO user_")
                 .append(userId)
+                .append("_")
+                .append(repoId)
+                .append(" (commit, commits_")
+                .append(branchId)
                 .append(") VALUES (")
                 .append(revision)
                 .append(",")
@@ -56,14 +56,14 @@ public class BranchRepository {
         session.execute(sb.toString());
     }
 
-    public void alter(Long repoId, Long branchId, Long userId) {
+    public void alter(Long userId, Long repoId, Long branchId) {
         StringBuilder sb = new StringBuilder()
-                .append("ALTER TABLE branch_")
-                .append(repoId)
-                .append("_")
-                .append(branchId)
-                .append(" ADD commits_")
+                .append("ALTER TABLE user_")
                 .append(userId)
+                .append("_")
+                .append(repoId)
+                .append(" ADD commits_")
+                .append(branchId)
                 .append(" int;");
         session.execute(sb.toString());
     }
