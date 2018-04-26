@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -99,9 +100,14 @@ public class RevisionController {
         }
         CommitDto rc = new CommitDto();
         rc.setCommit(neoBridge.getCommitFromBranch(branchId, revision));
+        rc.getCommit().setBlobIds(null == rc.getCommit().getBlobIds() ?
+                new HashSet<>() : rc.getCommit().getBlobIds());
         rc.setBlobs(new ArrayList<>());
-        rc.getBlobs().addAll(mongoBridge.getBlobsByIds(
-                rc.getCommit().getBlobIds()));
+        List<Blob> blobs = mongoBridge.getBlobsByIds(
+                rc.getCommit().getBlobIds());
+        if (null != blobs) {
+            rc.getBlobs().addAll(blobs);
+        }
         return ResponseEntity.ok(rc);
     }
 
