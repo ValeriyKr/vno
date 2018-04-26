@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author kk
@@ -105,6 +106,13 @@ public class RepoController {
     @GetMapping("/max")
     Repo max() {
         return repoRepository.findWithMaxId();
+    }
+
+    @GetMapping("/collaborators/{repoId}")
+    List<Long> collaborators(@PathVariable Long repoId) {
+        return userAccountRepository.findByRepoIdsContains(repoId).stream()
+                .mapToLong(UserAccount::getId)
+                .boxed().collect(Collectors.toList());
     }
 
     @GetMapping("/get_by_branch/{id}")

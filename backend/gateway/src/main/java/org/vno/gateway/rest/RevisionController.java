@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.vno.gateway.bridge.CassandraBridge;
 import org.vno.gateway.bridge.MongoBridge;
 import org.vno.gateway.bridge.NeoBridge;
 import org.vno.gateway.domain.Blob;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * @author kk
@@ -33,17 +33,21 @@ public class RevisionController {
 
     private final NeoBridge neoBridge;
     private final MongoBridge mongoBridge;
+    private final CassandraBridge cassandraBridge;
     private final BranchController branchController;
 
     @Autowired
     public RevisionController(NeoBridge neoBridge,
                               MongoBridge mongoBridge,
+                              CassandraBridge cassandraBridge,
                               BranchController branchController) {
         this.neoBridge = neoBridge;
         this.mongoBridge = mongoBridge;
+        this.cassandraBridge = cassandraBridge;
         this.branchController = branchController;
         assert null != neoBridge;
         assert null != mongoBridge;
+        assert null != cassandraBridge;
         assert null != branchController;
     }
 
@@ -106,7 +110,7 @@ public class RevisionController {
      * @param repoId repository id (must be accessible for user)
      * @param branchId branch id in repository
      * @param revision revision number
-     * @return commit with blobs (CommitDto), 403 or 404
+     * @return commit without blobs (CommitDto), 403 or 404
      */
     @GetMapping("/{repoId}/{branchId}/{revision}/")
     ResponseEntity<?> get(@PathVariable Long repoId,
@@ -121,6 +125,27 @@ public class RevisionController {
         }
         return ResponseEntity.ok(
                 neoBridge.getCommitFromBranch(branchId, revision));
+    }
+
+    /**
+     * Retrieves commits using cassandra
+     *
+     * @param repoId repository id (must be accessible for user)
+     * @param branchId branch id in repository
+     * @return list of commits
+     */
+    @GetMapping("/slice/{repoId}/{branchId}/")
+    ResponseEntity<?> getSlice(@PathVariable Long repoId,
+                               @PathVariable Long branchId) {
+        if (! mongoBridge.getRepoById(repoId).getBranchIds()
+                .contains(branchId)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        if (! branchController.hasAccessTo(branchId)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(neoBridge.getCommitsByIds(
+                cassandraBridge.branchSlice(repoId, branchId)), HttpStatus.OK);
     }
 
     /**
@@ -196,6 +221,8 @@ public class RevisionController {
         }
         commit = neoBridge.saveCommit(commit);
         neoBridge.moveBranch(branchId, commit.getRevision());
+        cassandraBridge.addRevision(commit.getAuthorId(), repoId, branchId,
+                commit.getRevision());
         return ResponseEntity.ok(commit);
     }
 

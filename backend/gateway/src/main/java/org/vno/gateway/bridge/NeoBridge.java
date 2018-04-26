@@ -12,6 +12,8 @@ import org.vno.gateway.domain.Branch;
 import org.vno.gateway.domain.Commit;
 import org.vno.gateway.domain.Tag;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -41,8 +43,9 @@ public class NeoBridge {
         }
     }
 
-    public void saveBranch(Branch branch) {
-        new RestTemplate().put(url + "/ref/add/", branch);
+    public Long saveBranch(Branch branch) {
+        return new RestTemplate().exchange(url + "/ref/add/", HttpMethod.PUT,
+                new HttpEntity<>(branch), Long.class).getBody();
     }
 
     public void deleteBranch(Long branch) {
@@ -99,4 +102,8 @@ public class NeoBridge {
                 + revision, Commit.class);
     }
 
+    public List<Commit> getCommitsByIds(List<Long> ids) {
+        return Arrays.asList(new RestTemplate().postForObject(
+                url + "/r/slice/", ids, Commit[].class));
+    }
 }

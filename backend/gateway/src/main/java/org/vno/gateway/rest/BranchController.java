@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.vno.gateway.bridge.CassandraBridge;
 import org.vno.gateway.bridge.MongoBridge;
 import org.vno.gateway.bridge.NeoBridge;
 import org.vno.gateway.domain.Branch;
@@ -24,17 +25,21 @@ public class BranchController {
 
     private final NeoBridge neoBridge;
     private final MongoBridge mongoBridge;
+    private final CassandraBridge cassandraBridge;
     private final RepoController repoController;
 
     @Autowired
     public BranchController(NeoBridge neoBridge,
                             MongoBridge mongoBridge,
+                            CassandraBridge cassandraBridge,
                             RepoController repoController) {
         this.neoBridge = neoBridge;
         this.mongoBridge = mongoBridge;
+        this.cassandraBridge = cassandraBridge;
         this.repoController = repoController;
         assert null != neoBridge;
         assert null != mongoBridge;
+        assert null != cassandraBridge;
         assert null != repoController;
     }
 
@@ -79,8 +84,10 @@ public class BranchController {
                     HttpStatus.BAD_REQUEST);
         }
         branch.setId(null);
-        branch.setHead(null); // TODO: bug
-        neoBridge.saveBranch(branch);
+        branch.setHead(headId); // TODO: commit in repo?
+        Long id = neoBridge.saveBranch(branch);
+        cassandraBridge.addBranch(repoId, id,
+                mongoBridge.getCollaborators(repoId));
         return new ResponseEntity(HttpStatus.OK);
     }
 

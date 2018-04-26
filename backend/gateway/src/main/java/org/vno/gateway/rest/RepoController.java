@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.vno.gateway.bridge.CassandraBridge;
 import org.vno.gateway.bridge.MongoBridge;
 import org.vno.gateway.domain.Repo;
 import org.vno.gateway.domain.UserAccount;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -29,11 +31,15 @@ public class RepoController {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private final MongoBridge mongoBridge;
+    private final CassandraBridge cassandraBridge;
 
     @Autowired
-    public RepoController(MongoBridge mongoBridge) {
+    public RepoController(MongoBridge mongoBridge,
+                          CassandraBridge cassandraBridge) {
         this.mongoBridge = mongoBridge;
+        this.cassandraBridge = cassandraBridge;
         assert null != mongoBridge;
+        assert null != cassandraBridge;
     }
 
     /**
@@ -65,7 +71,13 @@ public class RepoController {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
 
-        return mongoBridge.addRepo(repo, owner);
+        ResponseEntity<?> rc = mongoBridge.addRepo(repo, owner);
+        if (! rc.getStatusCode().equals(HttpStatus.OK)) {
+            return rc;
+        }
+        Long repoId = ((Repo)rc.getBody()).getId();
+        cassandraBridge.addUser(owner.getId(), repoId, new ArrayList<>());
+        return rc;
     }
 
     /**

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author kk
@@ -28,12 +29,12 @@ public class BranchRepository {
                 .append(repoId)
                 .append("_")
                 .append(branchId)
-                .append(" (commit int PRIMARY KEY");
+                .append(" (commit bigint PRIMARY KEY");
         if (null != userIds) {
             for (Long userId : userIds) {
                 sb.append(", commits_")
                         .append(userId)
-                        .append(" int");
+                        .append(" bigint");
             }
         }
         sb.append(");");
@@ -64,7 +65,18 @@ public class BranchRepository {
                 .append(branchId)
                 .append(" ADD commits_")
                 .append(userId)
-                .append(" int;");
+                .append(" bigint;");
         session.execute(sb.toString());
+    }
+
+    public List<Long> slice(Long repoId, Long branchId) {
+        StringBuilder sb = new StringBuilder()
+                .append("SELECT commit FROM branch_")
+                .append(repoId)
+                .append("_")
+                .append(branchId)
+                .append(";");
+        return session.execute(sb.toString()).all().stream()
+                .map(r -> r.get(0, Long.class)).collect(Collectors.toList());
     }
 }

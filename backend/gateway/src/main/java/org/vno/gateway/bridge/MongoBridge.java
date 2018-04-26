@@ -52,6 +52,14 @@ public class MongoBridge {
     }
 
     @SuppressWarnings("unchecked")
+    public List<Long> getCollaborators(Long repoId) {
+        ArrayList<Long> rc = new ArrayList<>();
+        rc =  new RestTemplate().getForObject(url + "/repo/collaborators/" +
+                repoId, rc.getClass());
+        return rc;
+    }
+
+    @SuppressWarnings("unchecked")
     public List<UserAccount> getAllUsers() {
         List<UserAccount> users = new ArrayList<>();
         users = new RestTemplate().getForObject(url + "/user/all/",

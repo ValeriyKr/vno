@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vno.cassandra.db.BranchRepository;
 import org.vno.cassandra.db.UserRepository;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -35,7 +36,7 @@ public class UserController {
     @PutMapping("/{userId}/{repoId}")
     void add(@PathVariable Long userId,
              @PathVariable Long repoId,
-             @RequestBody List<Long> branchIds) {
+             @Null @RequestBody List<Long> branchIds) {
         Long branches[] = new Long[0];
         if (null != branchIds) {
             branches = branchIds.toArray(new Long[branchIds.size()]);

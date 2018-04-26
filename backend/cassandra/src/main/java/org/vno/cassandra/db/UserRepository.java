@@ -4,7 +4,6 @@ import com.datastax.driver.core.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -28,12 +27,12 @@ public class UserRepository {
                 .append(userId)
                 .append("_")
                 .append(repoId)
-                .append(" (commit int PRIMARY KEY");
+                .append(" (commit bigint PRIMARY KEY");
         if (null != branchIds) {
             for (Long branchId : branchIds) {
                 sb.append(", commits_")
                         .append(branchId)
-                        .append(" int");
+                        .append(" bigint");
             }
         }
         sb.append(");");
@@ -64,7 +63,7 @@ public class UserRepository {
                 .append(repoId)
                 .append(" ADD commits_")
                 .append(branchId)
-                .append(" int;");
+                .append(" bigint;");
         session.execute(sb.toString());
     }
 }

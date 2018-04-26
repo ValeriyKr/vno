@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.vno.neo.domain.Commit;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author kk
@@ -28,4 +29,6 @@ public interface CommitRepository extends GraphRepository<Commit> {
             "RETURN (n),(m)")
     List<Commit> findFromBranch(@Param("branch") Long branch,
                                 @Param("revision") Long revision);
+
+    List<Commit> findByRevisionIn(Set<Long> revisions);
 }
