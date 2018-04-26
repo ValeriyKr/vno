@@ -100,6 +100,9 @@ public class RevisionController {
         }
         CommitDto rc = new CommitDto();
         rc.setCommit(neoBridge.getCommitFromBranch(branchId, revision));
+        if (null == rc.getCommit()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         rc.getCommit().setBlobIds(null == rc.getCommit().getBlobIds() ?
                 new HashSet<>() : rc.getCommit().getBlobIds());
         rc.setBlobs(new ArrayList<>());
