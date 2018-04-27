@@ -25,7 +25,7 @@ public interface CommitRepository extends GraphRepository<Commit> {
     @Query("MATCH " +
             "(b:branch " +
             "{branch:{branch}})-[*]->(n:commit {revision:{revision}})-" +
-            "[p:PARENT]->(m)" +
+            "[p:PARENT*0..]->(m)" +
             "RETURN (n),(m)")
     List<Commit> findFromBranch(@Param("branch") Long branch,
                                 @Param("revision") Long revision);
