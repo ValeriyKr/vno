@@ -91,7 +91,11 @@ public class RepoController {
             return new ResponseEntity<>("Already exists",
                     HttpStatus.BAD_REQUEST);
         }
-        repo.setId(repoRepository.findWithMaxId().getId() + 1);
+        try {
+            repo.setId(repoRepository.findWithMaxId().getId() + 1);
+        } catch (NullPointerException e) {
+            repo.setId(1L);
+        }
         repo = repoRepository.save(repo);
         if (owner.getRepoIds() == null) {
             owner.setRepoIds(new HashSet<>(Collections
