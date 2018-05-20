@@ -88,7 +88,8 @@ public class BranchController {
     @PutMapping("/add/")
     ResponseEntity<?> add(@RequestBody BranchAddDto dto) {
         Branch b = dto.getBranch();
-        b.setBranch(branchRepository.findMaxId() + 1);
+        Long maxRevision = branchRepository.findMaxId();
+        b.setBranch(maxRevision == null ? 0 : maxRevision + 1);
         b.setCommit(commitRepository.findByRevision(dto.getRevision()));
         if (null == b.getCommit()) {
             return new ResponseEntity<>("No such revision: " +
