@@ -35,10 +35,8 @@ public class BlobController {
     ResponseEntity<?> get(@PathVariable Long id) {
         Blob blob = blobRepository.findById(id);
         if (null == blob) {
-            logger.info("No blobs found");
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
-            logger.info(blob.toString());
         }
         return ResponseEntity.ok(blob);
     }
@@ -46,7 +44,11 @@ public class BlobController {
     @PostMapping(value = "/add")
     ResponseEntity<?> add(@RequestBody Blob blob) {
         // TODO: check blob already exists and return it
-        blob.setId(max().getId() + 1);
+	try {
+		blob.setId(max().getId() + 1);
+	} catch (NullPointerException e) {
+		blob.setId(1L);
+	}
         blob.setObjectId(null);
         return ResponseEntity.ok(blobRepository.save(blob));
     }

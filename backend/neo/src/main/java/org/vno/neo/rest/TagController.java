@@ -75,7 +75,8 @@ public class TagController {
     @PostMapping("/add")
     ResponseEntity<?> add(@RequestBody TagAddDto dto) {
         Tag b = dto.getTag();
-        b.setTag(tagRepository.findMaxId() + 1);
+        Long maxRevision = tagRepository.findMaxId();
+        b.setTag(maxRevision == null ? 0 : maxRevision + 1);
         b.setCommit(commitRepository.findByRevision(dto.getRevision()));
         if (null == b.getCommit()) {
             return new ResponseEntity<>("No such revision: " +

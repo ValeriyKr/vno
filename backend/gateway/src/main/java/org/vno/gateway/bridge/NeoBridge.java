@@ -43,9 +43,33 @@ public class NeoBridge {
         }
     }
 
+    static class BranchAddDto {
+        private Branch branch;
+        private Long revision;
+
+        public Branch getBranch() {
+            return branch;
+        }
+
+        public void setBranch(Branch branch) {
+            this.branch = branch;
+        }
+
+        public Long getRevision() {
+            return revision;
+        }
+
+        public void setRevision(Long revision) {
+            this.revision = revision;
+        }
+    }
+
     public Long saveBranch(Branch branch) {
+	BranchAddDto dto = new BranchAddDto();
+	dto.setBranch(branch);
+	dto.setRevision(branch.getHead());
         return new RestTemplate().exchange(url + "/ref/add/", HttpMethod.PUT,
-                new HttpEntity<>(branch), Long.class).getBody();
+                new HttpEntity<>(dto), Long.class).getBody();
     }
 
     public void deleteBranch(Long branch) {
