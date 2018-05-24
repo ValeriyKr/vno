@@ -40,7 +40,7 @@ public class UserAccountController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     ResponseEntity<?> get(@PathVariable Long id) {
-        UserAccount user = userAccountRepository.findOne(id);
+        UserAccount user = userAccountRepository.findOneWithRepos(id);
         if (null == user) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {

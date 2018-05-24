@@ -1,11 +1,14 @@
 package org.vno.pg.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.Set;
 
@@ -26,6 +29,9 @@ public class Repo {
     private Set<Branch> branches;
     @OneToMany(mappedBy = "repo")
     private Set<Tag> tags;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "repos")
+    private Set<UserAccount> owners;
 
     public Repo() {}
 
@@ -67,5 +73,13 @@ public class Repo {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Set<UserAccount> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(Set<UserAccount> owners) {
+        this.owners = owners;
     }
 }
