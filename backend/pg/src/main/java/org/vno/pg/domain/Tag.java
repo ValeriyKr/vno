@@ -1,5 +1,6 @@
 package org.vno.pg.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Entity;
@@ -23,6 +24,7 @@ public class Tag {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Commit head;
+    @JsonIgnore
     @ManyToOne
     private Repo repo;
 
