@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.vno</groupId>
-    <artifactId>dummycache</artifactId>
+    <artifactId>dummycache-mem</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>gateway</name>
+    <name>dummycache-mem</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
