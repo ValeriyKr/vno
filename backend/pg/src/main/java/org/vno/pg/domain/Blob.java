@@ -1,5 +1,7 @@
 package org.vno.pg.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class Blob {
     private String content;
     @NotNull
     private Integer mode;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "revision")
     @NotNull

@@ -1,5 +1,7 @@
 package org.vno.pg.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,13 +23,14 @@ public class Commit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long revision;
+    @JsonIgnore
     @NotNull
     @ManyToOne
     private UserAccount author;
     private String message;
     @NotNull
     private Long timestamp;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "parents",
             joinColumns = @JoinColumn(name = "parent_id"),
             inverseJoinColumns = @JoinColumn(name = "revision"))
