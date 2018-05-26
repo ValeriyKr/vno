@@ -128,6 +128,14 @@ public class RevisionController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             if (c.getRevision().equals(revision)) {
+                if (c.getParents() != null) {
+                    for (Commit cc : c.getParents()) {
+                        cc.setParents(null);
+                        cc.setAuthor(null);
+                        cc.setBlobs(null);
+                    }
+                }
+                c.getAuthor().setRepos(null);
                 return ResponseEntity.ok(c);
             }
             if (c.getParents() != null) {

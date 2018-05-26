@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.vno.domain.Branch;
 import org.vno.domain.Repo;
+import org.vno.domain.Tag;
 import org.vno.domain.UserAccount;
 import org.vno.repository.RepoRepository;
 import org.vno.repository.UserAccountRepository;
@@ -54,7 +56,21 @@ public class RepoController {
         if (! hasAccessTo(id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        return ResponseEntity.ok(repoRepository.findOne(id));
+        Repo r = repoRepository.findOne(id);
+        for (UserAccount u : r.getOwners()) {
+            u.setRepos(null);
+        }
+        if (null != r.getBranches()) {
+            for (Branch b : r.getBranches()) {
+                b.setHead(null);
+            }
+        }
+        if (null != r.getTags()) {
+            for (Tag t : r.getTags()) {
+                t.setHead(null);
+            }
+        }
+        return ResponseEntity.ok(r);
     }
 
     /**

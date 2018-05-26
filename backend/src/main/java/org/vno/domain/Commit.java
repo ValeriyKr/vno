@@ -23,7 +23,6 @@ public class Commit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long revision;
-    @JsonIgnore
     @NotNull
     @ManyToOne
     private UserAccount author;

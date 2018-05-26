@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.vno.domain.Repo;
 import org.vno.domain.Role;
 import org.vno.domain.UserAccount;
 import org.vno.repository.UserAccountRepository;
@@ -60,6 +61,12 @@ public class UserAccountController {
         UserAccount user = userAccountRepository.findByUsername(authentication
                 .getName());
         user.setPassword("");
+        if (user.getRepos() != null) {
+            for (Repo r : user.getRepos()) {
+                r.setBranches(null);
+                r.setTags(null);
+            }
+        }
         return ResponseEntity.ok(user);
     }
 

@@ -62,6 +62,9 @@ public class BranchController {
         if (! b.getRepo().getId().equals(repoId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
+        b.getHead().setParents(null);
+        b.getHead().setAuthor(null);
+        b.getHead().setBlobs(null);
         return ResponseEntity.ok(b);
     }
 
